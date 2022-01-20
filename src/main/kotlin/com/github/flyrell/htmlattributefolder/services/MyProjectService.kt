@@ -1,7 +1,7 @@
-package org.jetbrains.plugins.template.services
+package com.github.flyrell.htmlattributefolder.services
 
 import com.intellij.openapi.project.Project
-import org.jetbrains.plugins.template.MyBundle
+import com.github.flyrell.htmlattributefolder.MyBundle
 
 class MyProjectService(project: Project) {
 
