@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <text font-family="Arial-BoldMT, Arial" font-size="16" font-weight="bold" letter-spacing="1" fill="#ECECEC">
+            <tspan x="5.109375" y="25">attr</tspan>
+        </text>
+        <path d="M4,20 L36,20" stroke="#BB1C1C" stroke-linecap="square"/>
+    </g>
+</svg>
