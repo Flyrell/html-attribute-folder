@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.zbinski"
-version = "0.0.5"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -41,12 +41,12 @@ tasks {
 
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
-        channels.set(listOf("alpha"))
+//        channels.set(listOf("alpha"))
     }
 
     runIde {
         // Absolute path to the installed targetIDE to use as IDE Development
         // Instance (the "Contents" directory is macOS specific):
-        ideDir.set(file("/Users/zbinski/Library/Application Support/JetBrains/Toolbox/apps/PhpStorm/ch-0/222.3345.135/PhpStorm.app/Contents"))
+        ideDir.set(file("/Users/zbinski/Library/Application Support/JetBrains/Toolbox/apps/PhpStorm/ch-0/222.3739.61/PhpStorm.app/Contents"))
     }
 }

@@ -13,20 +13,30 @@ import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 
 class AttributeFolder: FoldingBuilderEx(), DumbAware {
-    companion object {
-        private const val ATTRIBUTE_SEPARATOR = "="
-        const val ATTRIBUTE_NAME = "data-cy"
-        const val ATTRIBUTE_WRAPPER = "\""
-        const val ATTRIBUTE_BEGINNING = ATTRIBUTE_NAME + ATTRIBUTE_SEPARATOR + ATTRIBUTE_WRAPPER
-    }
+    private val settings = AttributeFolderState.instance
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> = runBlocking {
         val descriptors = ArrayList<FoldingDescriptor>()
-        for (attribute in getAttributes(Array(1) { root })) {
-            val start = attribute.textRange.startOffset + ATTRIBUTE_BEGINNING.length
-            val end = attribute.textRange.endOffset - ATTRIBUTE_WRAPPER.length
+        for (item in getAttributes(Array(1) { root })) {
+            var end: Int
+            var start: Int
+            if (settings.foldingMethod == 1) {
+                end = item.attribute.textRange.endOffset
+                start = item.attribute.textRange.startOffset
+            } else {
+                val len = item.attributeName.length + settings.attributeSeparator.length + settings.attributeWrapper.length
+                start = item.attribute.textRange.startOffset + len
+                end = item.attribute.textRange.endOffset - settings.attributeWrapper.length
+            }
+
             if (end > start) {
-                descriptors.add(FoldingDescriptor(attribute.node, TextRange(start, end), FoldingGroup.newGroup(ATTRIBUTE_NAME)))
+                descriptors.add(
+                    FoldingDescriptor(
+                        item.attribute.node,
+                        TextRange(start, end),
+                        FoldingGroup.newGroup(item.attributeName)
+                    )
+                )
             }
         }
 
@@ -34,22 +44,34 @@ class AttributeFolder: FoldingBuilderEx(), DumbAware {
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
-        return "..."
+        if (settings.foldingMethod == 1) {
+            for (attributeName in settings.attributes) {
+                if (node.text.startsWith(attributeName))
+                    return attributeName
+            }
+        }
+        return settings.placeholder
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return true
+        return settings.collapseByDefault
     }
 
-    private infix fun getAttributes(elements: Array<PsiElement>): Sequence<PsiElement> = sequence {
+    private infix fun getAttributes(elements: Array<PsiElement>): Sequence<Attribute> = sequence {
         for (child in elements) {
-            if (child.text.startsWith(ATTRIBUTE_BEGINNING)) {
-                yield(child)
-            }
+            for (attributeName in settings.attributes) {
+                val attributeBeginning = attributeName + settings.attributeSeparator + settings.attributeWrapper
+                if (child.text.startsWith(attributeBeginning)) {
+                    yield(object : Attribute {
+                        override val attribute = child
+                        override val attributeName = attributeName
+                    })
+                }
 
-            val items = getAttributes(child.children).iterator()
-            while (items.hasNext()) {
-                yield(items.next())
+                val items = getAttributes(child.children).iterator()
+                while (items.hasNext()) {
+                    yield(items.next())
+                }
             }
         }
     }

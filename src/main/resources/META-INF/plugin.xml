@@ -7,7 +7,7 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>HTML Attribute Folder</name>
 
-    <version>0.0.5</version>
+    <version>1.0.0</version>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="dawid@zbinski.dev" url="https://zbinski.dev">Dawid Zbiński</vendor>
@@ -17,7 +17,10 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
     Annoyed with some html attributes and their length?
-    This plugin will help you fold them, so you don't need to see them anymore.
+    This simple and lightweight plugin will help you fold them, so you don't need to see them anymore.
+    Any template written in XML, HTML, XHTML and DTD is supported by the plugin.
+    The plugin will not edit your real code in any way, and you can choose
+    whether to fold the items by default, placeholder for folded items, and how the folding looks like.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -29,9 +32,17 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="dev.zbinski.htmlattributefolder.AttributeFolderState"/>
+
         <lang.foldingBuilder language="DTD" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="XML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="HTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="XHTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+
+        <projectConfigurable parentId="tools"
+                             nonDefaultProject="true"
+                             displayName="HTML Attribute Folder Settings"
+                             id="dev.zbinski.htmlattributefolder.AttributeFolderSettings"
+                             instance="dev.zbinski.htmlattributefolder.AttributeFolderSettings"/>
     </extensions>
 </idea-plugin>
