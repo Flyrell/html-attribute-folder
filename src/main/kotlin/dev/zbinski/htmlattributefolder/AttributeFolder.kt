@@ -57,9 +57,12 @@ class AttributeFolder: FoldingBuilderEx(), DumbAware {
         return settings.collapseByDefault
     }
 
-    private infix fun getAttributes(elements: Array<PsiElement>): Sequence<Attribute> = sequence {
+    private fun getAttributes(
+        elements: Array<PsiElement>,
+        attributes: ArrayList<String> = settings.attributes
+    ): Sequence<Attribute> = sequence {
         for (child in elements) {
-            for (attributeName in settings.attributes) {
+            for (attributeName in attributes) {
                 val attributeBeginning = attributeName + settings.attributeSeparator + settings.attributeWrapper
                 if (child.text.startsWith(attributeBeginning)) {
                     yield(object : Attribute {
@@ -68,7 +71,7 @@ class AttributeFolder: FoldingBuilderEx(), DumbAware {
                     })
                 }
 
-                val items = getAttributes(child.children).iterator()
+                val items = getAttributes(child.children, arrayListOf(attributeName)).iterator()
                 while (items.hasNext()) {
                     yield(items.next())
                 }
