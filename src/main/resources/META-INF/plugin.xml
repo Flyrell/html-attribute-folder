@@ -7,7 +7,7 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>HTML Attribute Folder</name>
 
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="dawid@zbinski.dev" url="https://zbinski.dev">Dawid Zbiński</vendor>
@@ -38,6 +38,10 @@
         <lang.foldingBuilder language="XML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="HTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="XHTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="TypeScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="TSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="JavaScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="JSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
 
         <projectConfigurable parentId="tools"
                              nonDefaultProject="true"
