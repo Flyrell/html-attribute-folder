@@ -49,4 +49,13 @@
                              id="dev.zbinski.htmlattributefolder.AttributeFolderSettings"
                              instance="dev.zbinski.htmlattributefolder.AttributeFolderSettings"/>
     </extensions>
+
+    <actions>
+        <action id="dev.zbinski.htmlattributefolder.AttributeFolderMyAction"
+                class="dev.zbinski.htmlattributefolder.AttributeFolderAction"
+                text="HTML Attribute Folder"
+                description="Toggle expand/collapse of all HTML attributes">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt e" />
+        </action>
+    </actions>
 </idea-plugin>
