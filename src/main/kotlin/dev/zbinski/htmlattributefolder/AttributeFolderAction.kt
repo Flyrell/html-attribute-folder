@@ -23,18 +23,23 @@ class AttributeFolderAction : AnAction() {
 
     }
 
+    private fun performFoldOperation(fold: FoldRegion) {
+        fold.isExpanded = !settings.collapse
+    }
+
     override fun actionPerformed(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR)
         val project = e.getData(CommonDataKeys.PROJECT)
         if (editor == null || project == null) {
             return
         }
+        settings.collapse = !settings.collapse
 
+        val foldingModel = editor.foldingModel
+        val allFoldRegions = foldingModel.allFoldRegions
         ApplicationManager.getApplication().runWriteAction {
-            settings.collapse = !settings.collapse
-            val foldRegions = editor.foldingModel.allFoldRegions
-            editor.foldingModel.runBatchFoldingOperation {
-                getFoldRegionsForRelevantAttributes(foldRegions).forEach { fold -> fold.isExpanded = !fold.isExpanded }
+            foldingModel.runBatchFoldingOperation {
+                getFoldRegionsForRelevantAttributes(allFoldRegions).forEach(::performFoldOperation)
             }
         }
     }
