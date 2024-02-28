@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+        run: echo "TAGGED_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
       - name: Checkout project sources
         uses: actions/checkout@v4
       - name: Setup Gradle
@@ -23,4 +23,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "build/distributions/html-attribute-folder-*.zip"
-          name: "html-attribute-folder-${{ steps.get_version.outputs.VERSION }}.zip"
+          name: "html-attribute-folder-${{ steps.get_version.outputs.TAGGED_VERSION }}.zip"
