@@ -1,0 +1,17 @@
+name: Build HTML-Attribute-Folder
+on: push
+jobs:
+  build-gradle-project:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build PlugIn
+        run: ./gradlew buildPlugin
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/distributions/html-attribute-folder-*.zip"
