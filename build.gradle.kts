@@ -1,11 +1,13 @@
+fun properties(key: String) = providers.gradleProperty(key)
+
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.6.20"
-    id("org.jetbrains.intellij") version "1.8.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.21"
+    id("org.jetbrains.intellij") version "1.17.2"
 }
 
-group = "dev.zbinski"
-version = "1.0.1"
+group = properties("pluginGroup").get()
+version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
@@ -14,23 +16,24 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.2")
-    type.set("PS") // Target IDE Platform
+    version.set(properties("platformVersion"))
+    type.set(properties("platformType"))
+    plugins.set(listOf(/* Plugin Dependencies */))
 }
 
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = properties("javaVersion").get()
+        targetCompatibility = properties("javaVersion").get()
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = properties("javaVersion").get()
     }
 
     patchPluginXml {
-        sinceBuild.set("213")
-        untilBuild.set("223.*")
+        sinceBuild.set(properties("pluginSinceBuild"))
+        untilBuild.set(properties("pluginUntilBuild"))
     }
 
     signPlugin {
@@ -42,11 +45,5 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
 //        channels.set(listOf("alpha"))
-    }
-
-    runIde {
-        // Absolute path to the installed targetIDE to use as IDE Development
-        // Instance (the "Contents" directory is macOS specific):
-        ideDir.set(file("/Users/zbinski/Library/Application Support/JetBrains/Toolbox/apps/PhpStorm/ch-0/222.3739.61/PhpStorm.app/Contents"))
     }
 }
