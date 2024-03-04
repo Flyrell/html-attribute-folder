@@ -13,8 +13,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil
  * these persistent application settings are stored.
  */
 @State(
-    name = "dev.zbinski.htmlattributefolder.AttributeFolderState",
-    storages = [Storage("html-attribute-folder.settings.xml")]
+        name = "dev.zbinski.htmlattributefolder.AttributeFolderState",
+        storages = [Storage("html-attribute-folder.settings.xml")]
 )
 class AttributeFolderState : PersistentStateComponent<AttributeFolderState> {
     companion object {
@@ -29,6 +29,7 @@ class AttributeFolderState : PersistentStateComponent<AttributeFolderState> {
     var placeholder = "..."
     var collapseByDefault = true
     var attributes = ArrayList<String>()
+    var collapse = true
 
     override fun getState(): AttributeFolderState {
         return this

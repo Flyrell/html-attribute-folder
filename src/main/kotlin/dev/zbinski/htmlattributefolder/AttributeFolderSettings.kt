@@ -21,9 +21,9 @@ class AttributeFolderSettings(): Configurable {
 
     override fun isModified(): Boolean {
         val settings = AttributeFolderState.instance
-        val attributes = settingsComponent?.attributes?.split(',') ?: ArrayList()
+        val attributes = getAttributes(settingsComponent?.attributes)
 
-        return !compareLists(attributes, settings.attributes)
+        return !compareLists(attributes, getAttributes(settings.attributes))
                 || settingsComponent?.placeholder != settings.placeholder
                 || settingsComponent?.foldingMethod != settings.foldingMethod
                 || settingsComponent?.collapseByDefault != settings.collapseByDefault
@@ -34,9 +34,7 @@ class AttributeFolderSettings(): Configurable {
         settings.placeholder = settingsComponent?.placeholder ?: ""
         settings.foldingMethod = settingsComponent?.foldingMethod ?: 0
         settings.collapseByDefault = settingsComponent?.collapseByDefault ?: true
-        settings.attributes = ArrayList(
-            settingsComponent?.attributes?.split(',') ?: ArrayList()
-        )
+        settings.attributes = ArrayList(getAttributes(settingsComponent?.attributes))
     }
 
     override fun reset() {
@@ -53,5 +51,13 @@ class AttributeFolderSettings(): Configurable {
 
     private fun compareLists(list1: List<String>, list2: List<String>): Boolean {
         return list1.size == list2.size && list1.toSet() == list2.toSet()
+    }
+
+    private fun getAttributes(rawAttributes: String? = null): List<String> {
+        return rawAttributes?.split(',')?.map { it.trim() } ?: ArrayList()
+    }
+
+    private fun getAttributes(rawAttributes: List<String>? = null): List<String> {
+        return rawAttributes?.flatMap { it.split(',').map { s -> s.trim() } } ?: ArrayList()
     }
 }

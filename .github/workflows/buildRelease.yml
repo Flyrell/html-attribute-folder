@@ -1,0 +1,26 @@
+name: Build HTML-Attribute-Folder
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build-gradle-project:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo "TAGGED_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build PlugIn
+        run: ./gradlew buildPlugin
+      - name: Release PlugIn
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "build/distributions/html-attribute-folder-*.zip"
+          name: "html-attribute-folder-${{ steps.get_version.outputs.TAGGED_VERSION }}.zip"
