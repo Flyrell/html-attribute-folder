@@ -7,7 +7,7 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>HTML Attribute Folder</name>
 
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="dawid@zbinski.dev" url="https://zbinski.dev">Dawid Zbiński</vendor>
@@ -18,7 +18,7 @@
     <description><![CDATA[
     Annoyed with some html attributes and their length?
     This simple and lightweight plugin will help you fold them, so you don't need to see them anymore.
-    Any template written in JSX/TSX, XML, HTML, XHTML and DTD is supported by the plugin.
+    Any template written in JSX, XML, HTML, XHTML and DTD is supported by the plugin.
     The plugin will not edit your real code in any way, and you can choose
     whether to fold the items by default, placeholder for folded items, and how the folding looks like.
   ]]></description>
