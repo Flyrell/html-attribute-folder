@@ -2,8 +2,8 @@ fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.21"
-    id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.kotlin.jvm") version "2.0.10"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
 }
 
 group = properties("pluginGroup").get()
@@ -11,14 +11,19 @@ version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set(properties("platformVersion"))
-    type.set(properties("platformType"))
-    plugins.set(listOf(/* Plugin Dependencies */))
+dependencies {
+    intellijPlatform {
+        val type = properties("platformType").get()
+        val version = properties("platformVersion").get()
+        create(type, version)
+        instrumentationTools()
+    }
 }
 
 tasks {
