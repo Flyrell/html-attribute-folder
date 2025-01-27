@@ -15,10 +15,10 @@ You can find the plugin on [IntelliJ marketplace](https://plugins.jetbrains.com/
 
 Manually verified with these products…
 
-- IntelliJ IDEA Community Edition 2024.2+
-- IntelliJ IDEA Ultimate 2024.2+
-- PhpStorm 2024.2+
-- WebStorm 2024.2+
+- IntelliJ IDEA Community Edition 2024.3+
+- IntelliJ IDEA Ultimate 2024.3+
+- PhpStorm 2024.3+
+- WebStorm 2024.3+
 
 ## ❤️🙏 Love & Thanks
 
