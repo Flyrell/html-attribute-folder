@@ -35,7 +35,9 @@ tasks {
         targetCompatibility = properties("javaVersion").get()
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        compilerOptions.jvmTarget = JvmTarget.JVM_21
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(properties("javaVersion").get()))
+        }
     }
 
     patchPluginXml {
