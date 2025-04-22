@@ -5,7 +5,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.0.10"
-    id("org.jetbrains.intellij.platform") version "2.0.1"
+    id("org.jetbrains.intellij.platform") version "2.5.0"
 }
 
 group = properties("pluginGroup").get()
@@ -24,7 +24,6 @@ dependencies {
         val type = properties("platformType").get()
         val version = properties("platformVersion").get()
         create(type, version)
-        instrumentationTools()
     }
 }
 
