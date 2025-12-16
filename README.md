@@ -12,14 +12,8 @@ You can find the plugin on [IntelliJ marketplace](https://plugins.jetbrains.com/
 
 ## Compatibility
 
-Manually verified with these products…
-
-- IntelliJ IDEA Community Edition 2025.2+
-- IntelliJ IDEA Ultimate 2025.2+
-- PhpStorm 2025.2+
-- WebStorm 2025.2+
+Manually verified with IntelliJ IDEA Unified distribution 2025.3+
 
 ## ❤️🙏 Love & Thanks
 
 - [tscharke](https://github.com/tscharke) for contributing
-
