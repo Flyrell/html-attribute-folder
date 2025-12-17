@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 fun properties(key: String) = providers.gradleProperty(key)
 
@@ -24,7 +25,12 @@ dependencies {
         val type = properties("platformType").get()
         val version = properties("platformVersion").get()
         create(type, version)
+
+        testFramework(TestFrameworkType.Platform)
+        bundledPlugin("JavaScript")
     }
+
+    testImplementation(kotlin("test"))
 }
 
 tasks {
