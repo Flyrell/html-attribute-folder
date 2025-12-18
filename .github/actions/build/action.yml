@@ -1,0 +1,43 @@
+name: Build HTML-Attribute-Folder
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'oracle'
+        java-version: ${{ inputs.java_version }}
+        cache: 'gradle'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Build PlugIn
+      shell: bash
+      run: ./gradlew buildPlugin
+
+    - name: Tests and Verify Plugin
+      shell: bash
+      run: ./gradlew verifyPlugin check
+
+    - name: Release PlugIn
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ inputs.github_token }}
+        artifacts: "build/distributions/html-attribute-folder-*.zip"
+        name: "html-attribute-folder-${{ inputs.version }}.zip"
+        tag: "v${{ inputs.version }}"
+        allowUpdates: true
+
+inputs:
+  github_token:
+    description: Access Token for GitHub
+    required: true
+  version:
+    description: Version of the Release
+    required: true
+  java_version:
+    description: Java version to use
+    required: false
+    default: "21"

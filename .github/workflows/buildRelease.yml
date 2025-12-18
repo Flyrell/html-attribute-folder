@@ -1,0 +1,41 @@
+name: Build and Release HTML-Attribute-Folder
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref }}
+
+      - name: Get the version
+        id: versions
+        run: echo "TAGGED_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Get branch data
+        uses: tj-actions/branch-names@v7
+        id: branches
+
+      # For debugging purposes
+      - name: Debug
+        shell: bash
+        run: |
+          echo "Version: ${{ steps.versions.outputs.TAGGED_VERSION }}"
+          echo "Branch : ${{ steps.branches.outputs.base_ref_branch || steps.branches.outputs.current_branch }}"
+
+      - name: Build and Release
+        uses: ./.github/actions/build
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ steps.versions.outputs.TAGGED_VERSION }}
+
+      # TODO Release projekt at IntelliJ's Marketplace
