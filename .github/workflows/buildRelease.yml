@@ -1,0 +1,73 @@
+name: Build and Release HTML-Attribute-Folder
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Maximize Build Space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1024
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+          build-mount-path: /mnt/gradle-cache
+
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref }}
+
+      - name: Get the version
+        id: versions
+        run: echo "TAGGED_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Validate version
+        id: check_version
+        run: |
+          if [[ "${{ steps.versions.outputs.TAGGED_VERSION }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "valid=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and Test
+        uses: ./.github/actions/build
+        with:
+          version: ${{ steps.versions.outputs.TAGGED_VERSION }}
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "build/distributions/html-attribute-folder-*.zip"
+          name: "Release v${{ steps.versions.outputs.TAGGED_VERSION }}"
+          tag: "v${{ steps.versions.outputs.TAGGED_VERSION }}"
+          prerelease: ${{ steps.check_version.outputs.valid != 'true' }}
+          allowUpdates: true
+
+      - name: Create IntelliJ's Marketplace Release
+        # Publish only valid semantic (real) versions
+        if: steps.check_version.outputs.valid == 'true'
+        run: ./gradlew publishPlugin -PpluginVersion=${{ steps.versions.outputs.TAGGED_VERSION }} --no-configuration-cache --no-build-cache
+        env:
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}
+          GRADLE_USER_HOME: /mnt/gradle-cache
+          GRADLE_OPTS: "-Dorg.gradle.configuration-cache=false -Dorg.gradle.caching=false"
+
+      - name: Cleanup Tag on Failure
+        if: failure()
+        run: |
+          echo "Build failed. Deleting tag v${{ steps.versions.outputs.TAGGED_VERSION }}..."
+          git push --delete origin v${{ steps.versions.outputs.TAGGED_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

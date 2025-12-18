@@ -1,0 +1,41 @@
+name: Build HTML-Attribute-Folder
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'oracle'
+        java-version: ${{ inputs.java_version }}
+        cache: 'gradle'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-disabled: true
+
+    - name: Build, Tests and Verify Plugin
+      shell: bash
+      run: |
+        ./gradlew buildPlugin verifyPlugin check \
+          -PpluginVersion=${{ inputs.version }} \
+          --no-configuration-cache \
+          --no-build-cache \
+          --no-daemon \
+          --max-workers=1 \
+          -Dorg.gradle.internal.http.socketTimeout=120000 \
+          -Dorg.gradle.internal.http.connectionTimeout=120000 \
+          -Dorg.gradle.internal.network.retry.max.attempts=10
+      env:
+        GRADLE_USER_HOME: /mnt/gradle-cache
+        GRADLE_OPTS: "-Dorg.gradle.configuration-cache=false"
+
+inputs:
+  version:
+    description: Version of the Release
+    required: true
+  java_version:
+    description: Java version to use
+    required: false
+    default: "21"

@@ -1,36 +1,47 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.2.0"
-    id("org.jetbrains.intellij.platform") version "2.5.0"
+    id("org.jetbrains.kotlin.jvm") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.10.5"
 }
 
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
 
 repositories {
+    gradlePluginPortal()
+    google()
     mavenCentral()
 
     intellijPlatform {
         defaultRepositories()
+        marketplace()
+        jetbrainsRuntime()
     }
 }
 
 dependencies {
     intellijPlatform {
-        val type = properties("platformType").get()
-        val version = properties("platformVersion").get()
+        val type = providers.gradleProperty("platformType").getOrElse("IU")
+        val version = providers.gradleProperty("platformVersion").getOrElse("2024.3")
         create(type, version)
 
-        testFramework(TestFrameworkType.Platform)
+        pluginVerifier()
+
+        testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
         bundledPlugin("JavaScript")
     }
 
     testImplementation(kotlin("test"))
+}
+
+intellijPlatform {
+    pluginVerification {
+        ides {
+            create(org.jetbrains.intellij.platform.gradle.IntelliJPlatformType.IntellijIdeaCommunity, "2024.3")
+        }
+    }
 }
 
 tasks {
@@ -41,7 +52,9 @@ tasks {
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.fromTarget(properties("javaVersion").get()))
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(properties("javaVersion").get()))
+            // Deactivate K2 to avoid SpillingKt problems during the verification phase
+            freeCompilerArgs.add("-Xuse-k2=false")
         }
     }
 
