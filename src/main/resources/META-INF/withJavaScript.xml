@@ -1,0 +1,8 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.foldingBuilder language="TypeScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="TypeScript JSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="JavaScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+        <lang.foldingBuilder language="JavaScript JSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+    </extensions>
+</idea-plugin>

@@ -11,16 +11,19 @@ class AttributeFolderAction : AnAction() {
 
     private fun getFoldRegionsForRelevantAttributes(foldRegions: Array<FoldRegion>): List<FoldRegion> {
         val relevantAttributes = settings.attributes
+        val result = mutableListOf<FoldRegion>()
 
         // Identifying a fold based on its "groupName"/"debugName" is possible because all folds relevant
         // to us have a self-defined `FoldingGroup` including the "groupname"/"debugName".
         // (see ->AttributeFolder.buildFoldRegions:37)
-        return foldRegions.filter {
-            val group = it.group
+        for (region in foldRegions) {
+            val group = region.group
             // The `group.toString()` returns the "groupName"/"debugName"
-            group != null && relevantAttributes.contains(group.toString())
+            if (group != null && relevantAttributes.contains(group.toString())) {
+                result.add(region)
+            }
         }
-
+        return result
     }
 
     private fun performFoldOperation(fold: FoldRegion) {
