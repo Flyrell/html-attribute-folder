@@ -2,6 +2,10 @@ package dev.zbinski.htmlattributefolder
 
 import javax.swing.JComponent
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.codeInsight.folding.CodeFoldingManager
 
 class AttributeFolderSettings(): Configurable {
     private var settingsComponent: AttributeFolderComponent? = null
@@ -35,6 +39,14 @@ class AttributeFolderSettings(): Configurable {
         settings.foldingMethod = settingsComponent?.foldingMethod ?: 0
         settings.collapseByDefault = settingsComponent?.collapseByDefault ?: true
         settings.attributes = ArrayList(getAttributes(settingsComponent?.attributes))
+
+        // Refresh folding in all open editors
+        for (project in ProjectManager.getInstance().openProjects) {
+            for (editor in FileEditorManager.getInstance(project).allEditors) {
+                val textEditor = (editor as? TextEditor)?.editor ?: continue
+                CodeFoldingManager.getInstance(project).updateFoldRegions(textEditor)
+            }
+        }
     }
 
     override fun reset() {
