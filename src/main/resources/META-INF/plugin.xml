@@ -29,7 +29,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.xml</depends>
-    <depends optional="true">com.intellij.modules.javascript</depends>
+    <depends optional="true" config-file="javascript-extensions.xml">com.intellij.modules.javascript</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -40,10 +40,7 @@
         <lang.foldingBuilder language="XML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="HTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
         <lang.foldingBuilder language="XHTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
-        <lang.foldingBuilder language="TypeScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
-        <lang.foldingBuilder language="TypeScript JSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
-        <lang.foldingBuilder language="JavaScript" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
-        <lang.foldingBuilder language="JavaScript JSX" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
+
         <lang.foldingBuilder language="RHTML" implementationClass="dev.zbinski.htmlattributefolder.AttributeFolder"/>
 
         <projectConfigurable parentId="tools"
