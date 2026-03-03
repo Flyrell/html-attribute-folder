@@ -1,7 +1,6 @@
 package dev.zbinski.htmlattributefolder
 
 import com.intellij.psi.PsiElement
-import kotlinx.coroutines.runBlocking
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.editor.Document
@@ -12,12 +11,20 @@ import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 
+private data class AttributePrefix(val name: String, val doubleQuote: String, val singleQuote: String, val brace: String)
+
 class AttributeFolder: FoldingBuilderEx(), DumbAware {
     private val settings = AttributeFolderState.instance
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> = runBlocking {
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        val attributes = settings.attributes
+        val prefixes = attributes.map { name ->
+            AttributePrefix(name, "$name=\"", "$name='", "$name={")
+        }
+        val minPrefixLen = prefixes.minOfOrNull { minOf(it.doubleQuote.length, it.singleQuote.length, it.brace.length) } ?: return emptyArray()
+
         val descriptors = ArrayList<FoldingDescriptor>()
-        for (item in getAttributes(Array(1) { root })) {
+        for (item in getAttributes(Array(1) { root }, prefixes, minPrefixLen)) {
             var end: Int
             var start: Int
 
@@ -80,7 +87,7 @@ class AttributeFolder: FoldingBuilderEx(), DumbAware {
             }
         }
 
-        return@runBlocking descriptors.toTypedArray()
+        return descriptors.toTypedArray()
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
@@ -116,28 +123,28 @@ class AttributeFolder: FoldingBuilderEx(), DumbAware {
 
     private fun getAttributes(
         elements: Array<PsiElement>,
-        attributes: ArrayList<String> = settings.attributes
+        prefixes: List<AttributePrefix>,
+        minPrefixLen: Int
     ): Sequence<Attribute> = sequence {
         for (child in elements) {
-            val t = child.text
-            for (attributeName in attributes) {
-                val startsLikeAttribute =
-                    t.startsWith("$attributeName=\"") ||
-                            t.startsWith("$attributeName='") ||
-                            t.startsWith("$attributeName={")
+            if (child.textLength >= minPrefixLen) {
+                val t = child.text
+                for (prefix in prefixes) {
+                    val startsLikeAttribute =
+                        t.startsWith(prefix.doubleQuote) ||
+                                t.startsWith(prefix.singleQuote) ||
+                                t.startsWith(prefix.brace)
 
-                if (startsLikeAttribute) {
-                    yield(object : Attribute {
-                        override val attribute = child
-                        override val attributeName = attributeName
-                    })
+                    if (startsLikeAttribute) {
+                        yield(object : Attribute {
+                            override val attribute = child
+                            override val attributeName = prefix.name
+                        })
+                    }
                 }
             }
 
-            val items = getAttributes(child.children, attributes).iterator()
-            while (items.hasNext()) {
-                yield(items.next())
-            }
+            yieldAll(getAttributes(child.children, prefixes, minPrefixLen))
         }
     }
 }

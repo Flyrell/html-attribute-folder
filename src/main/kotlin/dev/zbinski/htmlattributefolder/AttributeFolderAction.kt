@@ -10,7 +10,7 @@ class AttributeFolderAction : AnAction() {
     private val settings = AttributeFolderState.instance
 
     private fun getFoldRegionsForRelevantAttributes(foldRegions: Array<FoldRegion>): List<FoldRegion> {
-        val relevantAttributes = settings.attributes
+        val relevantAttributes = settings.attributes.toHashSet()
 
         // Identifying a fold based on its "groupName"/"debugName" is possible because all folds relevant
         // to us have a self-defined `FoldingGroup` including the "groupname"/"debugName".
