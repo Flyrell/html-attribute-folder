@@ -4,6 +4,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### IntelliJ Platform SDK ###
+.intellijPlatform/
+
 ### IntelliJ IDEA ###
 .idea/
 *.iws

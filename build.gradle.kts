@@ -5,8 +5,8 @@ fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.2.0"
-    id("org.jetbrains.intellij.platform") version "2.5.0"
+    id("org.jetbrains.kotlin.jvm") version "2.3.10"
+    id("org.jetbrains.intellij.platform") version "2.11.0"
 }
 
 group = properties("pluginGroup").get()
@@ -58,5 +58,13 @@ tasks {
 
     publishPlugin {
         token = providers.gradleProperty("intellijPlatformPublishingToken")
+    }
+}
+
+intellijPlatform {
+    pluginVerification {
+        ides {
+            recommended()
+        }
     }
 }
